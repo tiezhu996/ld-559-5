@@ -1,8 +1,9 @@
-import { Gender, InsuranceStatus, PetSpecies, PolicyType, VaccineStatus, VisitType } from '../constants/enums';
+import { Gender, InsuranceStatus, PetSpecies, PolicyType, VaccineStatus, VisitType, AppointmentStatus } from '../constants/enums';
 import type { InsurancePolicy } from '../types/insurance';
 import type { MedicalRecord } from '../types/medical';
 import type { Pet } from '../types/pet';
 import type { VaccineRecord } from '../types/vaccine';
+import type { Appointment, Clinic, Vet } from '../types/appointment';
 
 export const mockPets: Pet[] = [
   {
@@ -111,5 +112,50 @@ export const mockInsurance: InsurancePolicy[] = [
     endDate: '2026-07-01',
     status: InsuranceStatus.PENDING_RENEWAL,
     pet: mockPets[1],
+  },
+];
+
+export const mockVets: Vet[] = [
+  { id: 'vet-demo-1', name: '周医生', email: 'zhou@petcare.test' },
+  { id: 'vet-demo-2', name: '李医生', email: 'li@petcare.test' },
+];
+
+export const mockClinics: Clinic[] = [
+  { id: 'clinic-demo-1', name: '安心宠物医院', address: '上海市徐汇区健康路 12 号', phone: '021-38506' },
+  { id: 'clinic-demo-2', name: '爱宠诊所', address: '上海市浦东新区宠物大道 88 号', phone: '021-66889' },
+];
+
+export const mockAppointments: Appointment[] = [
+  {
+    id: 'apt-demo-1',
+    petId: 'pet-demo-1',
+    vetId: 'vet-demo-1',
+    clinicId: 'clinic-demo-1',
+    appointmentDate: '2026-06-25T10:00:00',
+    status: AppointmentStatus.PENDING,
+    type: VisitType.CHECKUP,
+    reason: '年度体检',
+    reminderSent: false,
+    createdAt: '2026-06-18T09:00:00',
+    updatedAt: '2026-06-18T09:00:00',
+    pet: mockPets[0],
+    vet: mockVets[0],
+    clinic: mockClinics[0],
+  },
+  {
+    id: 'apt-demo-2',
+    petId: 'pet-demo-2',
+    vetId: 'vet-demo-1',
+    clinicId: 'clinic-demo-1',
+    appointmentDate: '2026-06-20T14:30:00',
+    status: AppointmentStatus.CONFIRMED,
+    type: VisitType.ROUTINE,
+    reason: '皮肤复查',
+    reminderSent: false,
+    createdAt: '2026-06-15T10:00:00',
+    updatedAt: '2026-06-16T08:00:00',
+    pet: mockPets[1],
+    vet: mockVets[0],
+    clinic: mockClinics[0],
   },
 ];

@@ -1,11 +1,21 @@
-import { Card, Descriptions, List, Space, Tabs, Timeline, Typography } from 'antd';
+import { Card, Descriptions, List, Space, Tabs, Tag, Timeline, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
-import { usePetDetail, usePetInsurance, usePetMedical, usePetVaccines } from '../hooks/usePets';
+import { usePetDetail, usePetInsurance, usePetMedical, usePetVaccines, usePetAppointments } from '../hooks/usePets';
 import { PetAvatar } from '../components/common/PetAvatar';
 import { VaccineCalendar } from '../components/common/VaccineCalendar';
 import { StatusBadge } from '../components/common/StatusBadge';
-import { enumLabels } from '../constants/enums';
+import { enumLabels, appointmentStatusLabels, AppointmentStatus } from '../constants/enums';
 import { formatCurrency, formatDate } from '../utils/format';
+import dayjs from 'dayjs';
+import type { Appointment } from '../types/appointment';
+
+const appointmentStatusColors: Record<AppointmentStatus, string> = {
+  [AppointmentStatus.PENDING]: 'gold',
+  [AppointmentStatus.CONFIRMED]: 'green',
+  [AppointmentStatus.RESCHEDULED]: 'blue',
+  [AppointmentStatus.CANCELLED]: 'red',
+  [AppointmentStatus.COMPLETED]: 'gray',
+};
 
 export default function PetDetail() {
   const { id = '' } = useParams();
@@ -13,6 +23,7 @@ export default function PetDetail() {
   const { data: medical = [] } = usePetMedical(id);
   const { data: vaccines = [] } = usePetVaccines(id);
   const { data: policies = [] } = usePetInsurance(id);
+  const { data: appointments = [] } = usePetAppointments(id);
   if (!pet) return null;
   return (
     <Space direction="vertical" size={20} className="page-block">
@@ -56,6 +67,30 @@ export default function PetDetail() {
                 renderItem={(policy) => (
                   <List.Item actions={[<StatusBadge key="status" status={policy.status} />]}>
                     <List.Item.Meta title={`${policy.provider} ${enumLabels[policy.planType]}计划`} description={`${formatCurrency(policy.premium)} / 保障 ${formatCurrency(policy.coverage)}`} />
+                  </List.Item>
+                )}
+              />
+            ),
+          },
+          {
+            key: 'appointments',
+            label: '预约记录',
+            children: (
+              <List
+                dataSource={appointments}
+                locale={{ emptyText: '暂无预约记录' }}
+                renderItem={(apt: Appointment) => (
+                  <List.Item
+                    actions={[
+                      <Tag key="status" color={appointmentStatusColors[apt.status]}>
+                        {appointmentStatusLabels[apt.status]}
+                      </Tag>,
+                    ]}
+                  >
+                    <List.Item.Meta
+                      title={`${dayjs(apt.appointmentDate).format('YYYY-MM-DD HH:mm')} · ${enumLabels[apt.type]}`}
+                      description={`${apt.clinic?.name || ''} · ${apt.vet?.name || ''}${apt.reason ? ' · ' + apt.reason : ''}`}
+                    />
                   </List.Item>
                 )}
               />

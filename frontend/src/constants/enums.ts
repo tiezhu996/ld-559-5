@@ -44,6 +44,14 @@ export enum Gender {
   FEMALE = 'FEMALE',
 }
 
+export enum AppointmentStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  RESCHEDULED = 'RESCHEDULED',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+}
+
 export const enumLabels = {
   [PetSpecies.CAT]: '猫',
   [PetSpecies.DOG]: '狗',
@@ -67,4 +75,12 @@ export const enumLabels = {
   [PolicyType.PREMIUM]: '高级',
   [Gender.MALE]: '雄性',
   [Gender.FEMALE]: '雌性',
+};
+
+export const appointmentStatusLabels: Record<AppointmentStatus, string> = {
+  [AppointmentStatus.PENDING]: '待确认',
+  [AppointmentStatus.CONFIRMED]: '已确认',
+  [AppointmentStatus.RESCHEDULED]: '已改期',
+  [AppointmentStatus.CANCELLED]: '已取消',
+  [AppointmentStatus.COMPLETED]: '已完成',
 };

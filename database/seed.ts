@@ -1,4 +1,4 @@
-import { PrismaClient, Gender, InsuranceStatus, PetSpecies, PolicyType, UserRole, VaccineStatus, VisitType } from '@prisma/client';
+import { PrismaClient, Gender, InsuranceStatus, PetSpecies, PolicyType, UserRole, VaccineStatus, VisitType, AppointmentStatus } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -20,9 +20,16 @@ async function main() {
     update: {},
     create: { email: 'admin@petcare.test', password, name: '平台管理员', role: UserRole.ADMIN },
   });
-  const clinic = await prisma.clinic.create({ data: { name: '安心宠物医院', address: '上海市徐汇区健康路 12 号', phone: '021-38506' } });
-  const pet = await prisma.pet.create({
-    data: {
+  const clinic = await prisma.clinic.upsert({
+    where: { id: 'clinic-seed-1' },
+    update: {},
+    create: { id: 'clinic-seed-1', name: '安心宠物医院', address: '上海市徐汇区健康路 12 号', phone: '021-38506' },
+  });
+  const pet = await prisma.pet.upsert({
+    where: { id: 'pet-seed-1' },
+    update: {},
+    create: {
+      id: 'pet-seed-1',
       ownerId: owner.id,
       name: '豆包',
       species: PetSpecies.DOG,
@@ -70,6 +77,17 @@ async function main() {
       startDate: new Date('2026-01-01'),
       endDate: new Date('2026-12-31'),
       status: InsuranceStatus.ACTIVE,
+    },
+  });
+  await prisma.appointment.create({
+    data: {
+      petId: pet.id,
+      vetId: vet.id,
+      clinicId: clinic.id,
+      appointmentDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      status: AppointmentStatus.PENDING,
+      type: VisitType.CHECKUP,
+      reason: '年度体检',
     },
   });
 }

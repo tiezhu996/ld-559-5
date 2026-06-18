@@ -1,5 +1,5 @@
 import { Layout, Menu, Typography, Button } from 'antd';
-import { CalendarOutlined, FileTextOutlined, HeartOutlined, MedicineBoxOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { CalendarOutlined, FileTextOutlined, HeartOutlined, MedicineBoxOutlined, SafetyCertificateOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthGuard } from './guards/AuthGuard';
 import PetList from './pages/PetList';
@@ -7,12 +7,14 @@ import PetDetail from './pages/PetDetail';
 import MedicalManagement from './pages/MedicalManagement';
 import VaccineManagement from './pages/VaccineManagement';
 import InsuranceCenter from './pages/InsuranceCenter';
+import AppointmentManagement from './pages/AppointmentManagement';
 import Login from './pages/Login';
 import { NotificationBell } from './components/common/NotificationBell';
 import { useAuthStore } from './stores/authStore';
 
 const nav = [
   { key: '/pets', icon: <HeartOutlined />, label: <Link to="/pets">我的宠物</Link> },
+  { key: '/appointments', icon: <ClockCircleOutlined />, label: <Link to="/appointments">预约管理</Link> },
   { key: '/medical', icon: <MedicineBoxOutlined />, label: <Link to="/medical">就诊管理</Link> },
   { key: '/vaccines', icon: <CalendarOutlined />, label: <Link to="/vaccines">疫苗管理</Link> },
   { key: '/insurance', icon: <SafetyCertificateOutlined />, label: <Link to="/insurance">保险中心</Link> },
@@ -38,6 +40,7 @@ function AppLayout() {
           <Routes>
             <Route path="/pets" element={<PetList />} />
             <Route path="/pets/:id" element={<PetDetail />} />
+            <Route path="/appointments" element={<AppointmentManagement />} />
             <Route path="/medical" element={<MedicalManagement />} />
             <Route path="/vaccines" element={<VaccineManagement />} />
             <Route path="/insurance" element={<InsuranceCenter />} />

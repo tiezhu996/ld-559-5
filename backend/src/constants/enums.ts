@@ -43,3 +43,11 @@ export enum Gender {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
+
+export enum AppointmentStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  RESCHEDULED = 'RESCHEDULED',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+}

@@ -3,6 +3,7 @@ import { petApi } from '../api/petApi';
 import { medicalApi } from '../api/medicalApi';
 import { vaccineApi } from '../api/vaccineApi';
 import { insuranceApi } from '../api/insuranceApi';
+import { appointmentApi } from '../api/appointmentApi';
 
 export const usePets = (params?: { species?: string; q?: string }) =>
   useQuery({ queryKey: ['pets', params], queryFn: () => petApi.list(params) });
@@ -18,3 +19,6 @@ export const usePetVaccines = (petId?: string) =>
 
 export const usePetInsurance = (petId?: string) =>
   useQuery({ queryKey: ['insurance', petId], queryFn: () => insuranceApi.list({ petId }), enabled: Boolean(petId) });
+
+export const usePetAppointments = (petId?: string) =>
+  useQuery({ queryKey: ['appointments', petId], queryFn: () => appointmentApi.list({ petId }), enabled: Boolean(petId) });

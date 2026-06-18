@@ -20,6 +20,9 @@ import { InsuranceRepository } from './modules/insurance/insurance.repository';
 import { NotificationController } from './modules/notifications/notification.controller';
 import { NotificationService } from './modules/notifications/notification.service';
 import { NotificationScheduler } from './modules/notifications/notification.scheduler';
+import { AppointmentsController } from './modules/appointments/appointment.controller';
+import { AppointmentService } from './modules/appointments/appointment.service';
+import { AppointmentRepository } from './modules/appointments/appointment.repository';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -40,6 +43,7 @@ import { HealthController } from './health.controller';
     VaccineController,
     InsuranceController,
     NotificationController,
+    AppointmentsController,
   ],
   providers: [
     PrismaService,
@@ -54,6 +58,8 @@ import { HealthController } from './health.controller';
     InsuranceRepository,
     NotificationService,
     NotificationScheduler,
+    AppointmentService,
+    AppointmentRepository,
   ],
 })
 export class AppModule {}

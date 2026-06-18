@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { addDays } from '../../utils/date';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AppointmentRepository } from '../appointments/appointment.repository';
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly appointmentRepo: AppointmentRepository,
+  ) {}
 
   list(userId: string) {
     return this.prisma.notification.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
@@ -48,6 +52,31 @@ export class NotificationService {
           type: 'INSURANCE',
         },
       }).catch(() => undefined);
+    }
+
+    const tomorrowStart = addDays(new Date(), 1);
+    tomorrowStart.setHours(0, 0, 0, 0);
+    const tomorrowEnd = addDays(tomorrowStart, 1);
+    const upcomingAppointments = await this.appointmentRepo.findUpcomingForReminder(tomorrowStart, tomorrowEnd);
+    for (const apt of upcomingAppointments) {
+      const dateStr = apt.appointmentDate.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      await this.prisma.notification.create({
+        data: {
+          userId: apt.pet.ownerId,
+          title: '明日预约提醒',
+          content: `您的宠物 ${apt.pet.name} 明日 ${dateStr} 在 ${apt.clinic.name} 有预约，请准时到达。`,
+          type: 'APPOINTMENT',
+        },
+      }).catch(() => undefined);
+      await this.prisma.notification.create({
+        data: {
+          userId: apt.vetId,
+          title: '明日预约提醒',
+          content: `明日 ${dateStr} 您在 ${apt.clinic.name} 有 ${apt.pet.name} 的预约，请做好准备。`,
+          type: 'APPOINTMENT',
+        },
+      }).catch(() => undefined);
+      await this.appointmentRepo.markReminderSent(apt.id).catch(() => undefined);
     }
   }
 }
